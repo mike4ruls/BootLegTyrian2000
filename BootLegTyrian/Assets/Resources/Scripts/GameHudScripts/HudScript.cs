@@ -9,10 +9,10 @@ public class HudScript : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetButtonDown("Cancel"))
+
+    // Update is called once per frame
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.P))
         {
             if (ControlsUI.activeInHierarchy)
             {

@@ -27,7 +27,14 @@ public class HUBMovement : MonoBehaviour {
         {
             p1.transform.forward = new Vector3(xRot, 0.0f, zRot);
             //transform.rotation = Quaternion.Euler(xRot * 360, 0.0f, zRot * 360);
-            p1.transform.position += p1.transform.forward * (playerSpeed * Time.deltaTime);
+            if (p1.repairingSheild)
+            {
+                p1.transform.position += p1.transform.forward * (playerSpeed * p1.sheildRepairSpeedDebuff * Time.deltaTime);
+            }
+            else
+            {
+                p1.transform.position += p1.transform.forward * (playerSpeed * Time.deltaTime);
+            }
 
             leftTrail.Play();
             rightTrail.Play();

@@ -71,7 +71,7 @@ public class Worlds : MonoBehaviour {
         if (other.CompareTag("Player"))
         {
             myAudio.Pause();
-            worldText.SetText("", colorText);
+            worldText.ClearText();
             playerColliding = false;
         }
     }

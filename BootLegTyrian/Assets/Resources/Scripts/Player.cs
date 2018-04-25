@@ -119,6 +119,9 @@ public class Player : MonoBehaviour {
     public float sheildRechargeRate;
     public float strafeImmuneCD;
     public float damageImmuneCD;
+    public float sheildRepairSpeedDebuff;
+    [HideInInspector]
+    public bool repairingSheild;
 
 
     float currentRot;
@@ -195,6 +198,7 @@ public class Player : MonoBehaviour {
         rightSideBlasterBought = false;
         rightSideBlasterBroken = false;
 
+        repairingSheild = false;
         godMode = false;
 
         health = maxHealth;
@@ -258,12 +262,12 @@ public class Player : MonoBehaviour {
             this.gameObject.SetActive(false);
             isDead = true;
         }
-        if (inHUBWorld || sandBoxMode)
+        if (repairingSheild)
         {
             RechargeSheild();
         }
 
-            if (Input.GetButtonDown("Strafe"))
+            if (Input.GetButtonDown("Strafe") && !repairingSheild)
         {
             if (!canStrafe)
             {
@@ -299,8 +303,21 @@ public class Player : MonoBehaviour {
         }
         if (!isDead)
         {
-            
-            if ((guidedMissleCanShoot && guidedMissleBought && !guidingMissleBroken) && ((Input.GetAxis("Fire1") > 0.0f) || Input.GetKeyDown(KeyCode.F)))
+            if (sheildComponentBought && !sheildComponentBroken && ((Input.GetAxis("Fire1") > 0.0f) || Input.GetKey(KeyCode.R)))
+            {
+                if (!repairingSheild)
+                {
+                    repairingSheild = true;
+                }
+            }
+            else
+            {
+                if (repairingSheild)
+                {
+                    repairingSheild = false;
+                }   
+            }
+            if ((guidedMissleCanShoot && guidedMissleBought && !guidingMissleBroken) && ((Input.GetAxis("Fire2") < 0.0f) || Input.GetButton("Fire2")))
             {
                 for (int i = 0; i < guidedMisslePool.transform.childCount; i++)
                 {
@@ -545,7 +562,7 @@ public class Player : MonoBehaviour {
     }
     public void RechargeSheild()
     {
-        if (sheild != maxSheild && sheildComponentBought)
+        if (sheild != maxSheild && sheildComponentBought && !sheildComponentBroken)
         {
             sheildTimer += Time.deltaTime;
             if (sheildTimer >= sheildRechargeRate)

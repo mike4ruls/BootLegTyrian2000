@@ -69,14 +69,14 @@ public class SandBoxGameManager : MonoBehaviour
             gameOverTextObj.SetActive(true);
             continueButton.gameObject.SetActive(true);
 
-            if (Input.GetButtonDown("Submit"))
+            if (Input.GetButtonDown("Strafe"))
             {
                 LoadWorld();
             }
 
         }
 
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (!p1.isDead)
             {

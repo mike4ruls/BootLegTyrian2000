@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour {
             gameOverTextObj.SetActive(true);
             continueButton.gameObject.SetActive(true);
 
-            if (Input.GetButtonDown("Submit"))
+            if (Input.GetButtonDown("Strafe"))
             {
                 LoadWorld();
             }
@@ -77,13 +77,13 @@ public class GameManager : MonoBehaviour {
             finisheLevelTextObj.SetActive(true);
             continueButton.gameObject.SetActive(true);
             p1.GetComponent<BoxCollider>().enabled = false;
-            if (Input.GetButtonDown("Submit"))
+            if (Input.GetButtonDown("Strafe"))
             {
                 LoadWorld();
             }
         }
 
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Cancel"))
         {
             if(!levelBar.endLevel && !p1.isDead)
             {

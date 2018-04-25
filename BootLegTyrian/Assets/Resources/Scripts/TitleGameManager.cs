@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TitleGameManager : MonoBehaviour {
     Player p1;
@@ -9,6 +10,7 @@ public class TitleGameManager : MonoBehaviour {
     public AudioManager audioManager;
     public GameObject MainUI;
     public GameObject ControlsUI;
+    public Text tutorialText;
 
     // Use this for initialization
     void Start () {
@@ -18,11 +20,15 @@ public class TitleGameManager : MonoBehaviour {
 
         GameObject.FindGameObjectWithTag("BackgroundTile").GetComponent<Renderer>().material = backgroundTiles[ranNum];
 
+        if (!ImmortalGameManager.GM.tutorialOn)
+        {
+            tutorialText.text = "Tutorial: OFF";
+        }
     }
 
     // Update is called once per frame
     void Update () {
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetButtonDown("Submit") || Input.GetKeyDown("joystick button 7"))
         {
             LoadHubWorld();
         }
@@ -56,6 +62,12 @@ public class TitleGameManager : MonoBehaviour {
     void TurnOffMainUI()
     {
 
+    }
+    public void UpdateTutorialText()
+    {
+        bool on = ImmortalGameManager.ToggleTutorial();
+        tutorialText.text = on ? "Tutorial: ON" : "Tutorial: OFF";
+        audioManager.PlayButtonClicked();
     }
 
 }

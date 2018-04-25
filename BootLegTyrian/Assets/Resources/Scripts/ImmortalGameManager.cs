@@ -14,6 +14,7 @@ public class ImmortalGameManager : MonoBehaviour {
     public static SubLevelScript levelInfo;
     public static SpawnerManagerExtended levelSpawner;
 
+    public bool tutorialOn = true;
     int numOfWorlds = 10;
     bool firstStartedUp = true;
     bool hasAplayerLoaded = false;
@@ -48,7 +49,10 @@ public class ImmortalGameManager : MonoBehaviour {
                 }
                 levelInfo = new SubLevelScript();
                 levelSpawner = new SpawnerManagerExtended();
-
+                if (!tutorialOn)
+                {
+                    GM.gameObject.GetComponent<TutorialManager>().enabled = false;
+                }
                 GM.firstStartedUp = false;
             }
         }
@@ -261,5 +265,20 @@ public class ImmortalGameManager : MonoBehaviour {
     public static void CompleteWorld()
     {
         allWorlds[GM.worldNumber].completion = 1;
+    }
+    public static bool ToggleTutorial()
+    {
+        GM.tutorialOn = GM.tutorialOn ? false : true;
+
+        if (GM.tutorialOn)
+        {
+            GM.GetComponent<TutorialManager>().enabled = true;
+        }
+        else
+        {
+            GM.GetComponent<TutorialManager>().enabled = false;
+        }
+
+        return GM.tutorialOn;
     }
 }

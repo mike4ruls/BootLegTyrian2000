@@ -229,7 +229,7 @@ public class GameCamera : MonoBehaviour {
     }
     void CheckCamMode()
     {
-        if (Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonDown("Fire3"))
         {
             prevCamMode = camMode;
             camMode = (camMode == CameraMode.TopDown) ? CameraMode.CockPit : CameraMode.TopDown;

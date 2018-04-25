@@ -15,7 +15,9 @@ public class ShopScript : MonoBehaviour {
 
     ShopState curShopState;
     IconType curIconOpen;
+    SubMenuIcon curSubMenu;
     SubIconType curSubIconOpen;
+
 
     Player p1;
 
@@ -33,6 +35,8 @@ public class ShopScript : MonoBehaviour {
     public float moveSpeed;
     public float brokenComponentRate;
     public bool turnedOn;
+    [HideInInspector]
+    public bool controlsOn;
 
     float valueIncrease;
     float subValueIncrease;
@@ -67,9 +71,8 @@ public class ShopScript : MonoBehaviour {
     Vector4 noAlpha;
     Vector4 iconColor;
 
-    SubMenuIcon curSubMenu;
-
-    bool subIconsHidden;
+    [HideInInspector]
+    public bool subIconsHidden;
     int flashCount, flashMaxCount;
     int baseCost, ratePerLvl, subBaseCost, subRatePerLvl, finalCost;
     // Use this for initialization
@@ -122,6 +125,8 @@ public class ShopScript : MonoBehaviour {
         descText.color = textColor;
         costText.color = textColor;
         playerMonetText.color = textColor;
+
+        controlsOn = true;
 
         if (!turnedOn)
         {
@@ -621,6 +626,8 @@ public class ShopScript : MonoBehaviour {
     }
     public void DisplayStatsUI()
     {
+        if (!controlsOn) return;
+
         if (curShopState != ShopState.StatsMenu)
         {
             HideCurrentMenuUI(curShopState);
@@ -635,6 +642,8 @@ public class ShopScript : MonoBehaviour {
     }
     public void DisplayShopUI()
     {
+        if (!controlsOn) return;
+
         if (curShopState != ShopState.ShopMenu)
         {
             HideCurrentMenuUI(curShopState);
@@ -649,6 +658,8 @@ public class ShopScript : MonoBehaviour {
     }
     public void DisplayUpgradesUI()
     {
+        if (!controlsOn) return;
+
         if (curShopState != ShopState.UpgradesMenu)
         {
             HideCurrentMenuUI(curShopState);
@@ -663,6 +674,8 @@ public class ShopScript : MonoBehaviour {
     }
     public void DisplayAbilitiesUI()
     {
+        if (!controlsOn) return;
+
         if (curShopState != ShopState.AbilitiesMenu)
         {
             HideCurrentMenuUI(curShopState);
@@ -761,7 +774,10 @@ public class ShopScript : MonoBehaviour {
     }
     public void ToggleShopUI()
     {
-        turnedOn = turnedOn ? false : true;
+        if (controlsOn)
+        {
+            turnedOn = turnedOn ? false : true;
+        }
     }
     public void Buy()
     {

@@ -127,7 +127,7 @@ public class SubLevelScript : MonoBehaviour
     {
         if (other.CompareTag("Player") && !levelLocked)
         {
-            levelTextUI.text = levelName;
+            levelTextUI.GetComponent<WorldTextScript>().SetText(levelName, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
             if (isALevel)
             {
                 enemyLvlTextUI.text = "Enemy Lvl: " + minEnemyLvl + " ~ " + maxEnemyLvl;
@@ -141,7 +141,7 @@ public class SubLevelScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            levelTextUI.text = "";
+            levelTextUI.GetComponent<WorldTextScript>().ClearText();
             enemyLvlTextUI.text = "";
 
             rotSpeed = normRotSpeed;
