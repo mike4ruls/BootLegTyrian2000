@@ -97,16 +97,18 @@ public class TutorialManager : MonoBehaviour {
         {
             if (curTutorial == null)
             {
-                TurnOnTutorialBackground();
+                p1.controlsOn = false;
+                p1.GetComponent<HUBMovement>().enabled = false;
                 curTutorial = tutorialUI.transform.GetChild(2).gameObject;
                 curTutorial.SetActive(true);
             }
 
             if (Input.GetButtonDown("Strafe"))
             {
+                p1.GetComponent<HUBMovement>().enabled = true;
+                p1.controlsOn = true;
                 firstInteraction++;
                 numOfCompletedTutorials++;
-                TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
             }
@@ -119,6 +121,7 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = tutorialUI.transform.GetChild(3).gameObject;
                 curTutorial.SetActive(true);
                 Time.timeScale = 0.0f;
+                tutorialInUse = true;
             }
 
             if ((Input.GetAxis("Fire1") < 0.0f) || Input.GetButton("Fire1"))
@@ -171,13 +174,15 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial.SetActive(false);
                 curTutorial = null;
                 Time.timeScale = 1.0f;
+                StartCoroutine(EndTutorialWait(3.0f));
             }
         }
-        else if ((firstMoney == 0) && p1.inHUBWorld && (firstEnemy > 0))
+        else if ((firstMoney == 0) && p1.inHUBWorld && (p1.money > 0) && (firstEnemy > 0))
         {
             if (curTutorial == null)
             {
-                TurnOnTutorialBackground();
+                p1.controlsOn = false;
+                p1.GetComponent<HUBMovement>().enabled = false;
                 curTutorial = tutorialUI.transform.GetChild(6).gameObject;
                 curTutorial.SetActive(true);
             }
@@ -186,7 +191,8 @@ public class TutorialManager : MonoBehaviour {
             {
                 firstMoney++;
                 numOfCompletedTutorials++;
-                TurnOffTutorialBackground();
+                p1.GetComponent<HUBMovement>().enabled = true;
+                p1.controlsOn = true;
                 curTutorial.SetActive(false);
                 curTutorial = null;
             }
@@ -199,19 +205,28 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = tutorialUI.transform.GetChild(7).gameObject;
                 curTutorial.SetActive(true);
                 statsTutorial = true;
+                shop.controlsOn = false;
             }
             else if (!statsTutorial)
             {
                 curTutorial.SetActive(false);
                 curTutorial = null;
             }
-                if (Input.GetButtonDown("Strafe") || Input.GetButtonDown("R1Button"))
+            if (Input.GetButtonDown("Strafe") && curSlide == 1)
             {
+                curTutorial.transform.GetChild(1).gameObject.SetActive(false);
+                curTutorial.transform.GetChild(2).gameObject.SetActive(true);
+                curSlide++;
+            }
+            else if ((Input.GetButtonDown("Strafe") || (Input.GetButtonDown("R1Button")) && curSlide == 2))
+            {
+                shop.controlsOn = true;
                 firstTimeStats++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                curSlide = 1;
             }
         }
         else if ((firstTimeShop == 0) && shopIsActive && (shop.shopUI.activeInHierarchy || shopTutorial))
@@ -222,6 +237,7 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = tutorialUI.transform.GetChild(8).gameObject;
                 curTutorial.SetActive(true);
                 shopTutorial = true;
+                shop.controlsOn = false;
             }
             else if (!shopTutorial)
             {
@@ -229,20 +245,20 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = null;
             }
 
-            if (Input.GetButtonDown("Strafe") || Input.GetButtonDown("L1Button") || Input.GetButtonDown("R1Button"))
+            if (Input.GetButtonDown("Strafe"))
             {
                 firstTimeShop++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                shop.controlsOn = true;
             }
         }
         else if ((firstTimeUpgrades == 0) && shopIsActive && (shop.upgradesUI.activeInHierarchy || upgradeTutorial))
         {
             if (curTutorial == null)
             {
-                Time.timeScale = 0.0f;
                 TurnOnTutorialBackground();
                 curTutorial = tutorialUI.transform.GetChild(9).gameObject;
                 curTutorial.SetActive(true);
@@ -253,7 +269,6 @@ public class TutorialManager : MonoBehaviour {
             {
                 curTutorial.SetActive(false);
                 curTutorial = null;
-                Time.timeScale = 1.0f;
             }
 
             if (!shop.subIconsHidden)
@@ -265,9 +280,6 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = null;
 
                 firstTimeSubAbilities++;
-
-                Time.timeScale = 1.0f;
-                shop.controlsOn = true;
             }
         }
         else if ((firstTimeAbilities == 0) && shopIsActive && (shop.abilitiesUI.activeInHierarchy || abilitiesTutorial))
@@ -278,6 +290,7 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = tutorialUI.transform.GetChild(10).gameObject;
                 curTutorial.SetActive(true);
                 abilitiesTutorial = true;
+                shop.controlsOn = false;
             }
             else if (!abilitiesTutorial)
             {
@@ -285,13 +298,14 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial = null;
             }
 
-            if (Input.GetButtonDown("Strafe") || Input.GetButtonDown("L1Button"))
+            if (Input.GetButtonDown("Strafe"))
             {
                 firstTimeAbilities++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                shop.controlsOn = true;
             }
         }
         else if (firstTimeSubAbilities == 1)
@@ -303,13 +317,14 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial.SetActive(true);
             }
 
-            if (Input.GetButtonDown("Strafe") || Input.GetButtonDown("L1Button") || Input.GetButtonDown("R1Button"))
+            if (shop.subAbilityDisplayed)
             {
                 firstTimeSubAbilities++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                shop.controlsOn = true;
             }
         }
         else if ((firstSheild == 0) && p1.sheildComponentBought)
@@ -319,6 +334,7 @@ public class TutorialManager : MonoBehaviour {
                 TurnOnTutorialBackground();
                 curTutorial = tutorialUI.transform.GetChild(12).gameObject;
                 curTutorial.SetActive(true);
+                shop.turnedOn = false;
             }
 
             if (Input.GetButtonDown("Strafe") && curSlide == 1)
@@ -327,16 +343,17 @@ public class TutorialManager : MonoBehaviour {
                 curTutorial.transform.GetChild(2).gameObject.SetActive(true);
                 curSlide++;
             }
-            else if ((Input.GetAxis("Fire1") > 0.0f) || Input.GetKey(KeyCode.R)) //<==========================gotta change
+            else if (((Input.GetAxis("Fire1") > 0.0f) || Input.GetKey(KeyCode.R)) && curSlide == 2) //<==========================gotta change
             {
                 firstSheild++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                curSlide = 1;
             }
         }
-        else if ((firstMissle == 0) && p1.guidedMissleBought && !p1.inHUBWorld && !p1.sandBoxMode)
+        else if ((firstMissle == 0) && p1.guidedMissleBought && !p1.inHUBWorld && !p1.sandBoxMode && !tutorialInUse)
         {
             if (curTutorial == null)
             {
@@ -346,19 +363,28 @@ public class TutorialManager : MonoBehaviour {
                 Time.timeScale = 0.0f;
             }
 
-            if (Input.GetButtonDown("Fire2") && (Time.timeScale == 0.0f)) //<==========================gotta change
+            if (Input.GetButtonDown("Fire2") && curSlide == 1) //<==========================gotta change
             {
-                curTutorial.transform.GetChild(1).gameObject.SetActive(false);
-                curTutorial.transform.GetChild(2).gameObject.SetActive(true);
                 Time.timeScale = 1.0f;
+                curTutorial.transform.GetChild(1).gameObject.SetActive(false);
+                TurnOffTutorialBackground();
+                StartCoroutine(GuidedMissleWait(0.4f));
             }
-            else if (Input.GetButtonDown("Strafe"))
+            else if (((Input.GetAxis("Horizontal2") != 0.0f) || Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E)) && curSlide == 2)
+            {
+                Time.timeScale = 1.0f;
+                curTutorial.transform.GetChild(2).GetChild(4).gameObject.SetActive(true);
+                curSlide++;
+            }
+            else if (Input.GetButtonDown("Strafe") && curSlide == 3)
             {
                 firstMissle++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
                 curTutorial = null;
+                Time.timeScale = 1.0f;
+                curSlide = 1;
             }
         }
     }
@@ -372,4 +398,18 @@ public class TutorialManager : MonoBehaviour {
         yield return new WaitForSeconds(time);
         firstTurnAround++;
     }
+    IEnumerator EndTutorialWait(float time)
+    {
+        yield return new WaitForSeconds(time);
+        tutorialInUse = false;
+    }
+    IEnumerator GuidedMissleWait(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Time.timeScale = 0.0f;
+        TurnOnTutorialBackground();
+        curTutorial.transform.GetChild(2).gameObject.SetActive(true);
+        curSlide++;
+    }
+    
 }

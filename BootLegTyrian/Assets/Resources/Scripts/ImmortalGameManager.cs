@@ -15,6 +15,8 @@ public class ImmortalGameManager : MonoBehaviour {
     public static SpawnerManagerExtended levelSpawner;
 
     public bool tutorialOn = true;
+    public bool normalModeOn = true;
+    int startOffMoney = 0;
     int numOfWorlds = 10;
     bool firstStartedUp = true;
     bool hasAplayerLoaded = false;
@@ -53,6 +55,11 @@ public class ImmortalGameManager : MonoBehaviour {
                 {
                     GM.gameObject.GetComponent<TutorialManager>().enabled = false;
                 }
+                if (!normalModeOn)
+                {
+                    startOffMoney = 5000;
+                }
+                
                 GM.firstStartedUp = false;
             }
         }
@@ -67,7 +74,12 @@ public class ImmortalGameManager : MonoBehaviour {
 	}
     public static void LoadPlayerInfo()
     {
-        if (!GM.hasAplayerLoaded) { return; }
+        if (!GM.hasAplayerLoaded)
+        {
+            Player p1 = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+            p1.money = GM.startOffMoney;
+            return;
+        }
         Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         player.frontDamage = p1Copy.frontDamage;
@@ -125,7 +137,6 @@ public class ImmortalGameManager : MonoBehaviour {
     }
     public static void SavePlayerInfo()
     {
-        GM.hasAplayerLoaded = true;
         Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         p1Copy.frontDamage = player.frontDamage;
@@ -176,6 +187,8 @@ public class ImmortalGameManager : MonoBehaviour {
         p1Copy.sheild = player.sheild;
 
         p1Copy.money = player.money;
+
+        GM.hasAplayerLoaded = true;
     }
     public static void LoadWorldLevels()
     {
@@ -280,5 +293,20 @@ public class ImmortalGameManager : MonoBehaviour {
         }
 
         return GM.tutorialOn;
+    }
+    public static bool ToggleMode()
+    {
+        GM.normalModeOn = GM.normalModeOn ? false : true;
+
+        if (GM.normalModeOn)
+        {
+            GM.startOffMoney = 0;
+        }
+        else
+        {
+            GM.startOffMoney = 5000;
+        }
+
+        return GM.normalModeOn;
     }
 }

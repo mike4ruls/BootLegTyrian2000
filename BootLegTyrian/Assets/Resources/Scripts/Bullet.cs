@@ -52,5 +52,11 @@ public class Bullet : MonoBehaviour {
             myMeshRend.enabled = false;
             StartCoroutine(Despawner(0.5f));
         }
+        else if (other.tag == "BulletBlocker")
+        {
+            isActive = false;
+            myMeshRend.enabled = false;
+            StartCoroutine(Despawner(0.5f));
+        }
     }
 }

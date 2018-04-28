@@ -16,6 +16,8 @@ public class HUBMovement : MonoBehaviour {
 
         leftTrail =  p1.transform.GetChild(5).GetComponent<ParticleSystem>();
         rightTrail = p1.transform.GetChild(6).GetComponent<ParticleSystem>();
+        leftTrail.Stop();
+        rightTrail.Stop();
     }
 	
 	// Update is called once per frame

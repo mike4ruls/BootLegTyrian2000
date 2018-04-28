@@ -11,6 +11,7 @@ public class TitleGameManager : MonoBehaviour {
     public GameObject MainUI;
     public GameObject ControlsUI;
     public Text tutorialText;
+    public Text modeText;
 
     // Use this for initialization
     void Start () {
@@ -23,6 +24,10 @@ public class TitleGameManager : MonoBehaviour {
         if (!ImmortalGameManager.GM.tutorialOn)
         {
             tutorialText.text = "Tutorial: OFF";
+        }
+        if (!ImmortalGameManager.GM.normalModeOn)
+        {
+            modeText.text = "Mode: Testing Mode";
         }
     }
 
@@ -67,6 +72,12 @@ public class TitleGameManager : MonoBehaviour {
     {
         bool on = ImmortalGameManager.ToggleTutorial();
         tutorialText.text = on ? "Tutorial: ON" : "Tutorial: OFF";
+        audioManager.PlayButtonClicked();
+    }
+    public void UpdateModeText()
+    {
+        bool on = ImmortalGameManager.ToggleMode();
+        modeText.text = on ? "Mode: Normal Mode" : "Mode: Testing Mode";
         audioManager.PlayButtonClicked();
     }
 

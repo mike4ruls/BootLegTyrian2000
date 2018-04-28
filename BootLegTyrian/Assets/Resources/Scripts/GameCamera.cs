@@ -12,6 +12,7 @@ public class GameCamera : MonoBehaviour {
 
     public CameraMode camMode;
     public Player player;
+    public GameObject TopDownBlocker;
     public float height;
     public float seperationDist;
     public float topDownAngle;
@@ -80,6 +81,7 @@ public class GameCamera : MonoBehaviour {
                     player.zNegConstraint = zNegCockPitConstraint;
 
                     prevCamMode = CameraMode.TopDown;
+                    TopDownBlocker.SetActive(false);
 
                     curAngle = cockPitAngle;
                     break;
@@ -95,7 +97,8 @@ public class GameCamera : MonoBehaviour {
         {
             Vector3 newPos = (player.transform.position - center) / seperationDist;
             newPos = new Vector3(newPos.x, height, newPos.z);
-            transform.position = center + newPos + camShakePos;
+            //transform.position = center + newPos + camShakePos;
+            transform.position = center + newPos + (camShakePos * Time.timeScale);
         }
         else
         {
@@ -145,7 +148,8 @@ public class GameCamera : MonoBehaviour {
             }
 
             Vector3 newPos = new Vector3(center.x, height, center.z);
-            transform.position = newPos + camShakePos;
+            //transform.position = newPos + camShakePos;
+            transform.position = newPos + (camShakePos * Time.timeScale);
         }
         CheckCamMode();
 	}
@@ -233,6 +237,10 @@ public class GameCamera : MonoBehaviour {
         {
             prevCamMode = camMode;
             camMode = (camMode == CameraMode.TopDown) ? CameraMode.CockPit : CameraMode.TopDown;
+            if (!player.inHUBWorld && TopDownBlocker.activeInHierarchy)
+            {
+                TopDownBlocker.SetActive(false);
+            }
         }
 
         if (prevCamMode != camMode)
@@ -247,6 +255,10 @@ public class GameCamera : MonoBehaviour {
                         {
                             eulerRot = new Vector3(topDownAngle, eulerRot.y, eulerRot.z);
                             prevCamMode = camMode;
+                            if (!player.inHUBWorld)
+                            {
+                                TopDownBlocker.SetActive(true);
+                            }
                         }
                         transform.rotation = Quaternion.Euler(eulerRot);
 

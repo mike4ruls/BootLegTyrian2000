@@ -121,7 +121,7 @@ public class Player : MonoBehaviour {
     public float damageImmuneCD;
     public float sheildRepairSpeedDebuff;
     [HideInInspector]
-    public bool repairingSheild;
+    public bool repairingSheild, controlsOn;
 
 
     float currentRot;
@@ -135,6 +135,7 @@ public class Player : MonoBehaviour {
     public bool isDead;
     public bool inHUBWorld;
     public bool sandBoxMode = false;
+    public bool friendlyFireOn = true;
     bool canStrafe;
     bool canTilt;
     bool strafeImmune;
@@ -199,6 +200,7 @@ public class Player : MonoBehaviour {
         rightSideBlasterBroken = false;
 
         repairingSheild = false;
+        controlsOn = true;
         godMode = false;
 
         health = maxHealth;
@@ -267,7 +269,7 @@ public class Player : MonoBehaviour {
             RechargeSheild();
         }
 
-            if (Input.GetButtonDown("Strafe") && !repairingSheild)
+        if (Input.GetButtonDown("Strafe") && !repairingSheild && controlsOn)
         {
             if (!canStrafe)
             {
@@ -517,9 +519,16 @@ public class Player : MonoBehaviour {
                 health -= damage;
                 if (health <= 0.0f)
                 {
-                    health = 0.0f;
-                    isDead = true;
-                    gameObject.SetActive(false);
+                    if (inHUBWorld || sandBoxMode)
+                    {
+                        health = 0.1f;
+                    }
+                    else
+                    {
+                        health = 0.0f;
+                        isDead = true;
+                        gameObject.SetActive(false);
+                    }
                 }
             }
             else

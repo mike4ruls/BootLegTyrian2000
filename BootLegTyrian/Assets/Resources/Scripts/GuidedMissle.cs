@@ -12,6 +12,8 @@ public class GuidedMissle : MonoBehaviour {
     public float despawnTimer;
     public int damage;
 
+    bool canHitPlayer = false;
+
     float curXRot;
     float curZRot;
 
@@ -72,7 +74,6 @@ public class GuidedMissle : MonoBehaviour {
             explosion.Play();
             explosion.GetComponent<AudioSource>().Play(); ;
         }
-
         mainCam.ShakeCamera(0.7f, 1.5f);
         gameObject.SetActive(false);
     }
@@ -84,7 +85,9 @@ public class GuidedMissle : MonoBehaviour {
         transform.Rotate(90.0f, 0.0f, 0.0f);
 
         damage = dam;
+        canHitPlayer = false;
         StartCoroutine(Despawner(despawnTimer));
+        StartCoroutine(PlayerHitCD(1.0f));
     }
 
     IEnumerator Despawner(float time)
@@ -92,12 +95,27 @@ public class GuidedMissle : MonoBehaviour {
         yield return new WaitForSeconds(time);
         Explode();
     }
+    IEnumerator PlayerHitCD(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canHitPlayer = true;
+    }
 
     public void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy")
         {
             other.GetComponent<Enemy>().TakeDamage(damage);
+            Explode();
+        }
+        if (other.tag == "Player" && canHitPlayer)
+        {
+            Player p1 = other.GetComponent<Player>();
+            if (p1.friendlyFireOn)
+            {
+                Debug.Log(damage);
+                p1.TakeDamage(damage * 3);
+            }
             Explode();
         }
     }

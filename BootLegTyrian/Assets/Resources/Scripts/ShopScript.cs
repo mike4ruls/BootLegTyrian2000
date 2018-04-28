@@ -72,7 +72,7 @@ public class ShopScript : MonoBehaviour {
     Vector4 iconColor;
 
     [HideInInspector]
-    public bool subIconsHidden;
+    public bool subIconsHidden, subAbilityDisplayed;
     int flashCount, flashMaxCount;
     int baseCost, ratePerLvl, subBaseCost, subRatePerLvl, finalCost;
     // Use this for initialization
@@ -81,6 +81,7 @@ public class ShopScript : MonoBehaviour {
         curIconOpen = IconType.NONE;
         curSubIconOpen = SubIconType.NONE;
         subIconsHidden = true;
+        subAbilityDisplayed = false;
         finalCost = 0;
         flashMaxCount = 5;
         flashCount = 0;
@@ -229,6 +230,8 @@ public class ShopScript : MonoBehaviour {
         audioManager.PlayButtonClicked();
         curSubIconOpen = SubIconType.NONE;
 
+        subAbilityDisplayed = false;
+
         DisplayPlayerLevel2Icon();
     }
     public void DisplayTitleInfo(IconType type, Sprite icon, Vector4 color, SubMenuIcon sub, string tleTxt, string tleLvlTxt, string desc, int baseC, int rate, float valRate)
@@ -250,6 +253,8 @@ public class ShopScript : MonoBehaviour {
 
         audioManager.PlayButtonClicked();
         curSubIconOpen = SubIconType.NONE;
+
+        subAbilityDisplayed = false;
 
         if (DisplayPlayerLevel2Icon())
         {
@@ -274,6 +279,7 @@ public class ShopScript : MonoBehaviour {
         descTitleText.text = "Description:";
         descText.text = curSubMenu.firstSubDescription;
         subValueIncrease = curSubMenu.firstVauleIncreaseRate;
+        subAbilityDisplayed = true;
 
         DisplayPlayerLevel2SubIcon(curSubMenu.myFirstType);
     }
@@ -289,6 +295,7 @@ public class ShopScript : MonoBehaviour {
         descTitleText.text = "Description:";
         descText.text = curSubMenu.secondSubDescription;
         subValueIncrease = curSubMenu.secondVauleIncreaseRate;
+        subAbilityDisplayed = true;
 
         DisplayPlayerLevel2SubIcon(curSubMenu.mySecondType);
     }
