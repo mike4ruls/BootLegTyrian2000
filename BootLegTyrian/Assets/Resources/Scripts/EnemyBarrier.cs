@@ -30,7 +30,10 @@ public class EnemyBarrier : MonoBehaviour {
         health -= damage;
         if (health < maxHealth - ((maxHealth / numOfCracks) *  (stage+1)))
         {
-            stage++;
+            if (stage < numOfCracks-1)
+            {
+                stage++;
+            }       
         }
         if (health <= 0)
         {
