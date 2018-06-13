@@ -22,6 +22,7 @@ public class TutorialManager : MonoBehaviour {
     int firstInteraction = 0;
     int firstEnemy = 0;
     int firstStrafe = 0;
+    int firstSword = 0;
     int firstTurnAround = 0;
     int firstMoney = 0;
 
@@ -34,7 +35,7 @@ public class TutorialManager : MonoBehaviour {
     int firstSheild = 0;
     int firstMissle = 0;
 
-    int numOfTutorials = 12;
+    int numOfTutorials = 13;
     int numOfCompletedTutorials = 0;
 
     int curSlide = 1;
@@ -148,6 +149,27 @@ public class TutorialManager : MonoBehaviour {
             if (Input.GetButtonDown("Strafe"))
             {
                 firstStrafe++;
+                numOfCompletedTutorials++;
+                TurnOffTutorialBackground();
+                curTutorial.SetActive(false);
+                curTutorial = null;
+                Time.timeScale = 1.0f;
+                StartCoroutine(SwordWait(turnWaitTimer));
+            }
+        }
+        else if (firstSword == 1)
+        {
+            if (curTutorial == null)
+            {
+                TurnOnTutorialBackground();
+                curTutorial = tutorialUI.transform.GetChild(14).gameObject;
+                curTutorial.SetActive(true);
+                Time.timeScale = 0.0f;
+            }
+
+            if (Input.GetButtonDown("Fire2"))
+            {
+                firstSword++;
                 numOfCompletedTutorials++;
                 TurnOffTutorialBackground();
                 curTutorial.SetActive(false);
@@ -392,6 +414,11 @@ public class TutorialManager : MonoBehaviour {
     {
         yield return new WaitForSeconds(time);
         firstStrafe++;
+    }
+    IEnumerator SwordWait(float time)
+    {
+        yield return new WaitForSeconds(time);
+        firstSword++;
     }
     IEnumerator TurnAroundWait(float time)
     {

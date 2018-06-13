@@ -232,18 +232,23 @@ public class ImmortalGameManager : MonoBehaviour {
     public static void LoadGameLevel()
     {
         GameObject spawnPoint = GameObject.FindGameObjectWithTag("EnemySpawnPoint");
+        EndLevel finishLine = GameObject.FindGameObjectWithTag("EndLevel").GetComponent<EndLevel>();
+        GameObject lastObject = null;
 
         for(int i = 0; i < levelInfo.numOfWaves; i++)
         {
-            GameObject enemySpawn = levelSpawner.SpawnObject();
+            SpawnInfo info = levelSpawner.SpawnObject();
+            GameObject enemySpawn = info.obj;
 
-            int numOfEnemies = Random.Range(levelInfo.minEnemySpawns, levelInfo.maxEnemySpawns);
+
+            int numOfEnemies = Random.Range(info.minSpawnAmmount, info.maxSpawnAmmount);
             for (int j = 0; j < numOfEnemies; j++)
             {
                 GameObject enemy = Instantiate(enemySpawn);
 
                 float ranXPos = Random.Range(p1Copy.xNegConstraint + 30, p1Copy.xPosConstraint - 30);
-                float ranZPos = Random.Range(0, 0);
+                float ranZPos = Random.Range(p1Copy.zNegConstraint + 40, p1Copy.zPosConstraint - 40);
+                //float ranZPos = Random.Range(0, 0);
 
                 enemy.transform.position = new Vector3(spawnPoint.transform.position.x + ranXPos, spawnPoint.transform.position.y, (spawnPoint.transform.position.z + ranZPos)+(i * 45));
 
@@ -251,8 +256,13 @@ public class ImmortalGameManager : MonoBehaviour {
                 enemyScript.level = Random.Range(levelInfo.minEnemyLvl, levelInfo.maxEnemyLvl);
 
                 enemyScript.Init();
+                if ((i == levelInfo.numOfWaves - 1) && (j == numOfEnemies - 1))
+                {
+                    lastObject = enemy;
+                }
             }
         }
+        finishLine.lastEnemy = lastObject;
     }
     public static void SaveGameLevelInfo(SubLevelScript info, SpawnerManagerExtended spawner)
     {

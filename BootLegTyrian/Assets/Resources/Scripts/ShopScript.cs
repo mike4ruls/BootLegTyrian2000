@@ -75,8 +75,14 @@ public class ShopScript : MonoBehaviour {
     public bool subIconsHidden, subAbilityDisplayed;
     int flashCount, flashMaxCount;
     int baseCost, ratePerLvl, subBaseCost, subRatePerLvl, finalCost;
+
+    HealthBarUI healtBar;
+    SheildBarUI sheildBar;
     // Use this for initialization
     void Start () {
+        healtBar = GameObject.FindGameObjectWithTag("HealthBarUI").GetComponent<HealthBarUI>();
+        sheildBar = GameObject.FindGameObjectWithTag("SheildBarUI").GetComponent<SheildBarUI>();
+
         curShopState = ShopState.StatsMenu;
         curIconOpen = IconType.NONE;
         curSubIconOpen = SubIconType.NONE;
@@ -807,6 +813,7 @@ public class ShopScript : MonoBehaviour {
                         p1.health = p1.maxHealth;
                         p1.money -= finalCost;
                         audioManager.PlayBuySucceed();
+                        healtBar.Init();
                         break;
                     }
                 case IconType.DefenseIcon:
@@ -991,6 +998,7 @@ public class ShopScript : MonoBehaviour {
                         p1.maxSheild += subValueIncrease;
                         p1.sCPowerLvl++;
                         audioManager.PlayBuySucceed();
+                        sheildBar.Init();
                         break;
                     }
             }

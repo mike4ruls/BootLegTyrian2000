@@ -5,16 +5,28 @@ using UnityEngine;
 public class EndLevel : MonoBehaviour {
     public float levelSpeed;
     public bool endLevel;
+    public bool canMove;
+
+    [HideInInspector]
+    public GameObject lastEnemy;
     // Use this for initialization
     void Start () {
         endLevel = false;
+        canMove = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (!endLevel)
+        if (canMove)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - (levelSpeed * Time.deltaTime));
+        }
+        else if(lastEnemy != null)
+        {
+            if (lastEnemy.transform.position.z < transform.position.z)
+            {
+                canMove = true;
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -22,6 +34,7 @@ public class EndLevel : MonoBehaviour {
         if (other.tag == "Player")
         {
             endLevel = true;
+            canMove = false;
         }
     }
 }

@@ -10,6 +10,7 @@ public class TitleGameManager : MonoBehaviour {
     public AudioManager audioManager;
     public GameObject MainUI;
     public GameObject ControlsUI;
+    public GameObject SettingsUI;
     public Text tutorialText;
     public Text modeText;
 
@@ -54,19 +55,18 @@ public class TitleGameManager : MonoBehaviour {
         MainUI.SetActive(false);
         ControlsUI.SetActive(true);
     }
-    void TurnOffControls()
-    {
-
-    }
     public void TurnOnMainUI()
     {
         audioManager.PlayButtonClicked();
         MainUI.SetActive(true);
         ControlsUI.SetActive(false);
+        SettingsUI.SetActive(false);
     }
-    void TurnOffMainUI()
+    public void TurnOnSettingUI()
     {
-
+        audioManager.PlayButtonClicked();
+        SettingsUI.SetActive(true);
+        MainUI.SetActive(false);
     }
     public void UpdateTutorialText()
     {

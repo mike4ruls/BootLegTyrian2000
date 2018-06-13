@@ -2,14 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct SpawnInfo
+{
+    public GameObject obj;
+    public int minSpawnAmmount;
+    public int maxSpawnAmmount;
+}
+
 public class SpawnerManagerExtended : MonoBehaviour
 {
-    public List<GameObject> holyFuck;
-    public List<GameObject> legendary;
-    public List<GameObject> ultraRare;
-    public List<GameObject> rare;
-    public List<GameObject> uncommon;
-    public List<GameObject> common;
+    //[SerializeField]
+    public List<SpawnInfo> holyFuck;
+    public List<SpawnInfo> legendary;
+    public List<SpawnInfo> ultraRare;
+    public List<SpawnInfo> rare;
+    public List<SpawnInfo> uncommon;
+    public List<SpawnInfo> common;
 
     float holyFuckRarityWeight = 300;
     float legendaryRarityWeight = 800;
@@ -86,7 +95,7 @@ public class SpawnerManagerExtended : MonoBehaviour
         }
     }
 
-    public GameObject SpawnObject()
+    public SpawnInfo SpawnObject()
     {
         float ranNum = Random.Range(0, totalWeightsInUse);
 
@@ -163,6 +172,6 @@ public class SpawnerManagerExtended : MonoBehaviour
             }
         }
 
-        return null;
+        return new SpawnInfo();
     }
 }

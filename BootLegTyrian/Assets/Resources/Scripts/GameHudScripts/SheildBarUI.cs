@@ -7,6 +7,8 @@ public class SheildBarUI : MonoBehaviour {
     float topDisplaySheild;
     float botDisplaySheild;
 
+    RectTransform backSheildUI;
+    RectTransform frontSheildUI;
     RectTransform topDisplaySheildUI;
     RectTransform botDisplaySheildUI;
 
@@ -15,9 +17,25 @@ public class SheildBarUI : MonoBehaviour {
 
     bool turnedOff;
 
+    float backBaseScale;
+    float frontBaseScale;
+    float topBaseScale;
+    float botBaseScale;
+
+    float lerpTime = 0.0f;
+
     // Use this for initialization
     void Start () {
         p1 = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        backSheildUI = transform.GetChild(0).GetComponent<RectTransform>();
+        frontSheildUI = transform.GetChild(1).GetComponent<RectTransform>();
+        botDisplaySheildUI = transform.GetChild(2).GetComponent<RectTransform>();
+        topDisplaySheildUI = transform.GetChild(3).GetComponent<RectTransform>();
+
+        backBaseScale = backSheildUI.localScale.x;
+        frontBaseScale = frontSheildUI.localScale.x;
+        topBaseScale = topDisplaySheildUI.localScale.x;
+        botBaseScale = botDisplaySheildUI.localScale.x;
 
         Init();
     }
@@ -26,8 +44,22 @@ public class SheildBarUI : MonoBehaviour {
         topDisplaySheild = p1.sheild;
         botDisplaySheild = p1.sheild;
 
-        topDisplaySheildUI = transform.GetChild(3).GetComponent<RectTransform>();
+        backSheildUI = transform.GetChild(0).GetComponent<RectTransform>();
+        frontSheildUI = transform.GetChild(1).GetComponent<RectTransform>();
         botDisplaySheildUI = transform.GetChild(2).GetComponent<RectTransform>();
+        topDisplaySheildUI = transform.GetChild(3).GetComponent<RectTransform>();
+
+        if (backSheildUI.localScale.x < 3.0f)
+        {
+
+            float offset = p1.sCPowerLvl * 0.01f;
+
+            backSheildUI.localScale = new Vector3(backBaseScale + offset, backSheildUI.localScale.y, backSheildUI.localScale.z);
+            frontSheildUI.localScale = new Vector3(frontBaseScale + offset, frontSheildUI.localScale.y, frontSheildUI.localScale.z);
+            botDisplaySheildUI.localScale = new Vector3(botBaseScale + offset, botDisplaySheildUI.localScale.y, botDisplaySheildUI.localScale.z);
+            topDisplaySheildUI.localScale = new Vector3(topBaseScale + offset, topDisplaySheildUI.localScale.y, topDisplaySheildUI.localScale.z);
+            //Debug.Log(backSheildUI.localScale.x + offset);
+        }
 
         topSheildScale = topDisplaySheildUI.localScale;
         botSheildScale = botDisplaySheildUI.localScale;
@@ -71,6 +103,15 @@ public class SheildBarUI : MonoBehaviour {
                 botDisplaySheildUI.localScale = new Vector3(botSheildScale.x * (botDisplaySheild / p1.maxSheild), botSheildScale.y, botSheildScale.z);
             }
             topDisplaySheild = p1.sheild;
+        }
+        if (!p1.canRepairSheild)
+        {
+            botDisplaySheildUI.localScale = new Vector3(botSheildScale.x * lerpTime, botSheildScale.y, botSheildScale.z);
+            lerpTime += (Time.deltaTime * p1.sheildWaitTime * 0.1f);
+        }
+        else
+        {
+            lerpTime = 0.0f;
         }
     }
     public void TurnOnUI()

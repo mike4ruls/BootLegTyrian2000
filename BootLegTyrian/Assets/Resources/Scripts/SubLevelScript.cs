@@ -13,8 +13,6 @@ public class SubLevelScript : MonoBehaviour
     public int sceneNum;
     public int minEnemyLvl;
     public int maxEnemyLvl;
-    public int minEnemySpawns;
-    public int maxEnemySpawns;
     public int numOfWaves;
 
     public bool reverseRot;

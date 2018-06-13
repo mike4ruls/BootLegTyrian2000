@@ -24,6 +24,9 @@ public class Enemy : MonoBehaviour {
     GameCamera cam;
 
     bool startFlashing;
+
+    [HideInInspector]
+    public bool invincible = false;
 	// Use this for initialization
 	void Start () {
         Init();
@@ -49,8 +52,12 @@ public class Enemy : MonoBehaviour {
     }
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        startFlashing = true;
+        if (!invincible)
+        {
+            health -= damage;
+            startFlashing = true;
+        }
+    
     }
     public void CheckIfDead()
     {

@@ -28,7 +28,7 @@ public class GameMovement : MonoBehaviour {
         }
         RotateBackwards();
         float speed = 0.0f;
-        if (p1.repairingSheild)
+        if (p1.repairingSheild && p1.canRepairSheild)
         {
             speed = playerSpeed * p1.sheildRepairSpeedDebuff;
         }

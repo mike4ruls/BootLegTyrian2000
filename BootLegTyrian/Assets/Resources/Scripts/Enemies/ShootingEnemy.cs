@@ -6,6 +6,7 @@ public class ShootingEnemy : Enemy {
 
     public float atkSpeed;
     bool canShoot;
+    bool hasBullets;
     GameObject player;
     GameObject enemyBullets;
 
@@ -13,11 +14,19 @@ public class ShootingEnemy : Enemy {
     void Start () {
         player = GameObject.FindGameObjectWithTag("Player");
         enemyBullets = GameObject.FindGameObjectWithTag("EnemyBulletPool");
-        for (int i = 0; i < enemyBullets.transform.childCount; i++)
+        hasBullets = true;
+        if (enemyBullets != null)
         {
-            enemyBullets.transform.GetChild(i).gameObject.SetActive(false);
+            for (int i = 0; i < enemyBullets.transform.childCount; i++)
+            {
+                enemyBullets.transform.GetChild(i).gameObject.SetActive(false);
+            }
         }
-
+        else
+        {
+            hasBullets = false;
+        }
+        
         canShoot = true;
         Init();
 	}
@@ -35,20 +44,32 @@ public class ShootingEnemy : Enemy {
 
     void Shoot()
     {
-        for (int i = 0; i < enemyBullets.transform.childCount; i++)
+        if (hasBullets)
         {
-            if (!enemyBullets.transform.GetChild(i).gameObject.activeInHierarchy)
-            {
-                Vector3 dir2Player = player.transform.position - transform.position;
-                dir2Player.Normalize();
+            Vector3 dir2Player = player.transform.position - transform.position;
 
-                enemyBullets.transform.GetChild(i).gameObject.SetActive(true);
-                enemyBullets.transform.GetChild(i).GetComponent<EnemyBullet>().ActivateBullet(transform.position, dir2Player, damage);
-                canShoot = false;
-                StartCoroutine(ShootTimer(atkSpeed));
-                break;
+            float magSqr = dir2Player.magnitude;
+
+            if (magSqr > 60)
+            {
+                return;
             }
-        }
+
+            for (int i = 0; i < enemyBullets.transform.childCount; i++)
+            {
+                if (!enemyBullets.transform.GetChild(i).gameObject.activeInHierarchy)
+                {
+                    
+                    dir2Player.Normalize();
+
+                    enemyBullets.transform.GetChild(i).gameObject.SetActive(true);
+                    enemyBullets.transform.GetChild(i).GetComponent<EnemyBullet>().ActivateBullet(transform.position, dir2Player, damage);
+                    canShoot = false;
+                    StartCoroutine(ShootTimer(atkSpeed));
+                    break;
+                }
+            }
+        }      
     }
     IEnumerator ShootTimer(float time)
     {

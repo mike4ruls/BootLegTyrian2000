@@ -29,7 +29,7 @@ public class HUBMovement : MonoBehaviour {
         {
             p1.transform.forward = new Vector3(xRot, 0.0f, zRot);
             //transform.rotation = Quaternion.Euler(xRot * 360, 0.0f, zRot * 360);
-            if (p1.repairingSheild)
+            if (p1.repairingSheild && p1.canRepairSheild)
             {
                 p1.transform.position += p1.transform.forward * (playerSpeed * p1.sheildRepairSpeedDebuff * Time.deltaTime);
             }

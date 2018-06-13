@@ -121,7 +121,9 @@ public class Player : MonoBehaviour {
     public float damageImmuneCD;
     public float sheildRepairSpeedDebuff;
     [HideInInspector]
-    public bool repairingSheild, controlsOn;
+    public bool repairingSheild, controlsOn, canRepairSheild;
+    [HideInInspector]
+    public float sheildWaitTime = 3.0f;
 
 
     float currentRot;
@@ -200,6 +202,7 @@ public class Player : MonoBehaviour {
         rightSideBlasterBroken = false;
 
         repairingSheild = false;
+        canRepairSheild = true;
         controlsOn = true;
         godMode = false;
 
@@ -264,7 +267,7 @@ public class Player : MonoBehaviour {
             this.gameObject.SetActive(false);
             isDead = true;
         }
-        if (repairingSheild)
+        if (repairingSheild && canRepairSheild)
         {
             RechargeSheild();
         }
@@ -536,7 +539,11 @@ public class Player : MonoBehaviour {
                 sheild -= damage;
                 if (sheild <= 0.0f)
                 {
+                    float temp = sheild * -1.0f;
                     sheild = 0.0f;
+                    canRepairSheild = false;
+                    StartCoroutine(SheildRechargeCDTimer(sheildWaitTime));
+                    TakeDamage((int)temp);
                 }
             }
 
@@ -568,6 +575,11 @@ public class Player : MonoBehaviour {
     {
         yield return new WaitForSeconds(time);
         guidedMissleCanShoot = true;
+    }
+    IEnumerator SheildRechargeCDTimer(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canRepairSheild = true;
     }
     public void RechargeSheild()
     {

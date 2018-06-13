@@ -12,6 +12,7 @@ public class Bullet : MonoBehaviour {
     public int damage;
 
     bool isActive;
+    bool reflected = false;
 	// Use this for initialization
 	void Start () {
         GetComponent<Renderer>().material.color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
@@ -39,7 +40,8 @@ public class Bullet : MonoBehaviour {
     IEnumerator Despawner(float time)
     {
         yield return new WaitForSeconds(time);
-        this.gameObject.SetActive(false);
+        reflected = false;
+        this.gameObject.SetActive(false);   
     }
 
 
@@ -52,8 +54,23 @@ public class Bullet : MonoBehaviour {
             myMeshRend.enabled = false;
             StartCoroutine(Despawner(0.5f));
         }
+        else if (other.tag == "EnemyBarrier" && isActive)
+        {
+            transform.forward *= -1;
+            reflected = true;
+            //isActive = false;
+            //myMeshRend.enabled = false;
+            //StartCoroutine(Despawner(0.5f));
+        }
         else if (other.tag == "BulletBlocker")
         {
+            isActive = false;
+            myMeshRend.enabled = false;
+            StartCoroutine(Despawner(0.5f));
+        }
+        else if (other.tag == "Player" && reflected)
+        {
+            other.GetComponent<Player>().TakeDamage(damage);
             isActive = false;
             myMeshRend.enabled = false;
             StartCoroutine(Despawner(0.5f));
