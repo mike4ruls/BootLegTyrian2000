@@ -18,6 +18,9 @@ public class SubLevelScript : MonoBehaviour
     public bool reverseRot;
     public bool levelLocked;
     public bool levelCompleted;
+    public bool isBoss;
+
+    string genLevelName;
 
     public GameObject[] connectingLevels;
 
@@ -37,9 +40,15 @@ public class SubLevelScript : MonoBehaviour
         levelTextUI = GameObject.Find("LevelText").GetComponent<Text>();
         enemyLvlTextUI = GameObject.Find("EnemyLvlText").GetComponent<Text>();
 
+        genLevelName = "Level " + levelNum;
+
         if (GetComponent<SpawnerManagerExtended>() == null)
         {
             isALevel = false;
+        }
+        if (isBoss)
+        {
+            genLevelName = "";
         }
 
         Init();
@@ -125,7 +134,8 @@ public class SubLevelScript : MonoBehaviour
     {
         if (other.CompareTag("Player") && !levelLocked)
         {
-            levelTextUI.GetComponent<WorldTextScript>().SetText(levelName, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+            string fullName = genLevelName + levelName;
+            levelTextUI.GetComponent<WorldTextScript>().SetText(fullName, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
             if (isALevel)
             {
                 enemyLvlTextUI.text = "Enemy Lvl: " + minEnemyLvl + " ~ " + maxEnemyLvl;

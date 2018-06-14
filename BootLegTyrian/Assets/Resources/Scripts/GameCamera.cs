@@ -58,7 +58,10 @@ public class GameCamera : MonoBehaviour {
         }
         shakeList = new List<CamShakeInfo>();
         InitCamShakeEntries();
-
+        CamModeInit();
+    }
+	public void CamModeInit()
+    {
         switch (camMode)
         {
             case CameraMode.TopDown:
@@ -81,14 +84,16 @@ public class GameCamera : MonoBehaviour {
                     player.zNegConstraint = zNegCockPitConstraint;
 
                     prevCamMode = CameraMode.TopDown;
-                    TopDownBlocker.SetActive(false);
+                    if (TopDownBlocker != null)
+                    {
+                        TopDownBlocker.SetActive(false);
+                    }
 
                     curAngle = cockPitAngle;
                     break;
                 }
         }
     }
-	
 	// Update is called once per frame
 	void Update () {
         UpdateCamShake(Time.deltaTime);
@@ -230,6 +235,10 @@ public class GameCamera : MonoBehaviour {
             }
         }
         return -1;
+    }
+    public void ReadjustCam()
+    {
+        transform.position = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
     }
     void CheckCamMode()
     {

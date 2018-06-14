@@ -44,6 +44,7 @@ public class Worlds : MonoBehaviour {
         {
             if (Input.GetButtonDown("Submit"))
             {
+                ImmortalGameManager.SavePlayerPos();
                 ImmortalGameManager.SavePlayerInfo();
                 SceneManager.LoadScene(sceneNum);
             }

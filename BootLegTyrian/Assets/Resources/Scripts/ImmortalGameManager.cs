@@ -8,14 +8,19 @@ public class ImmortalGameManager : MonoBehaviour {
     public static ImmortalGameManager GM;
     public static Player p1Copy;
 
-    public static Worlds[] allWorlds;
+    public static List<Worlds> allWorlds;
     public static List<SubLevelScript>[] allSubLevels;
 
     public static SubLevelScript levelInfo;
     public static SpawnerManagerExtended levelSpawner;
 
+    Vector3 lastWorldPos;
+    Vector3 lastLevelPos;
+
     public bool tutorialOn = true;
     public bool normalModeOn = true;
+    public bool cockPitModeOn = false;
+    bool insideWorld = false;
     int startOffMoney = 0;
     int numOfWorlds = 10;
     bool firstStartedUp = true;
@@ -43,7 +48,7 @@ public class ImmortalGameManager : MonoBehaviour {
             {
                 //Debug.Log("FirstStartUp");
                 p1Copy = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-                allWorlds = new Worlds[numOfWorlds]; ;
+                allWorlds = new List<Worlds>();
                 allSubLevels = new List<SubLevelScript>[numOfWorlds];
                 for (int i = 0; i < numOfWorlds; i++)
                 {
@@ -61,6 +66,10 @@ public class ImmortalGameManager : MonoBehaviour {
                 }
                 
                 GM.firstStartedUp = false;
+                GM.lastLevelPos = Vector3.zero;
+                GM.lastWorldPos = Vector3.zero;
+
+                SetCamMode(0);
             }
         }
             
@@ -72,6 +81,18 @@ public class ImmortalGameManager : MonoBehaviour {
         void Update () {
 		
 	}
+    public static void SetCamMode(float zOffset)
+    {
+        if (GM.cockPitModeOn)
+        {
+            GameCamera cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameCamera>();
+            cam.camMode = GameCamera.CameraMode.CockPit;
+            Vector3 camAngles = cam.transform.rotation.eulerAngles;
+            cam.transform.rotation = Quaternion.Euler(60, camAngles.y, camAngles.z);
+            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, cam.transform.position.z + zOffset);
+            cam.CamModeInit();
+        } 
+    }
     public static void LoadPlayerInfo()
     {
         if (!GM.hasAplayerLoaded)
@@ -194,23 +215,29 @@ public class ImmortalGameManager : MonoBehaviour {
     {
         GameObject worlds = GameObject.FindGameObjectWithTag("Worlds");
 
-        if (allWorlds[0] == null)
+        if (allWorlds.Count == 0)
         {
             for (int i = 0; i < worlds.transform.childCount; i++)
             {
-                allWorlds[i] = worlds.transform.GetChild(i).GetComponent<Worlds>();
+                allWorlds.Add(worlds.transform.GetChild(i).GetComponent<Worlds>());
             }
+
+            GM.lastWorldPos = GameObject.FindGameObjectWithTag("Player").transform.position;
+            SetCamMode(-20);
             return;
         }
         for (int i = 0; i < GM.numOfWorlds; i++)
         {
             worlds.transform.GetChild(i).GetComponent<Worlds>().completion = allWorlds[i].completion;
-            worlds.transform.GetChild(i).GetComponent<Worlds>().Init();
+            worlds.transform.GetChild(i).GetComponent<Worlds>().Init();          
         }
+        GM.insideWorld = false;
+        GameObject.FindGameObjectWithTag("Player").transform.position = GM.lastWorldPos;
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameCamera>().ReadjustCam();
+        SetCamMode(-20);
     }
     public static void LoadSubLevels(int worldNum)
     {
-        
         GameObject levels = GameObject.FindGameObjectWithTag("Levels");
 
         GM.worldNumber = worldNum;
@@ -221,17 +248,45 @@ public class ImmortalGameManager : MonoBehaviour {
             {
                 allSubLevels[worldNum].Add(levels.transform.GetChild(i).GetComponent<SubLevelScript>());
             }
+            Vector3 homeStarPos = GameObject.FindGameObjectWithTag("HomeStar").transform.position;
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            GM.lastLevelPos = new Vector3(homeStarPos.x, playerObj.transform.position.y, homeStarPos.z + 5);
+            playerObj.transform.position = GM.lastLevelPos;
+            GM.insideWorld = true;
+            GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameCamera>().ReadjustCam();
+            SetCamMode(-20);
             return;
         }
         for (int i = 0; i < allSubLevels[worldNum].Count; i++)
         {
             levels.transform.GetChild(i).GetComponent<SubLevelScript>().levelCompleted = allSubLevels[worldNum][i].levelCompleted;
-            levels.transform.GetChild(i).GetComponent<SubLevelScript>().Init();
+            levels.transform.GetChild(i).GetComponent<SubLevelScript>().Init();        
         }
+        if (GM.insideWorld)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            playerObj.transform.position = GM.lastLevelPos;
+        }
+        else
+        {
+            GM.insideWorld = true;
+
+            Vector3 homeStarPos = GameObject.FindGameObjectWithTag("HomeStar").transform.position;
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            GM.lastLevelPos = new Vector3(homeStarPos.x, playerObj.transform.position.y, homeStarPos.z + 5);
+            playerObj.transform.position = GM.lastLevelPos;           
+        }
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameCamera>().ReadjustCam();
+        SetCamMode(-20);
     }
     public static void LoadGameLevel()
     {
+        SetCamMode(-20);
         GameObject spawnPoint = GameObject.FindGameObjectWithTag("EnemySpawnPoint");
+        if (GM.cockPitModeOn)
+        {
+            spawnPoint.transform.position = new Vector3(spawnPoint.transform.position.x, spawnPoint.transform.position.y, spawnPoint.transform.position.z + 80);
+        }
         EndLevel finishLine = GameObject.FindGameObjectWithTag("EndLevel").GetComponent<EndLevel>();
         GameObject lastObject = null;
 
@@ -275,10 +330,12 @@ public class ImmortalGameManager : MonoBehaviour {
         //levelInfo.numOfWaves = info.numOfWaves;
 
         levelSpawner = spawner;
+
+        GM.lastLevelPos = GameObject.FindGameObjectWithTag("Player").transform.position;
     }
     public static void CompleteGameLevel()
     {
-        allSubLevels[GM.worldNumber][levelInfo.levelNum].levelCompleted = true;
+        allSubLevels[GM.worldNumber][levelInfo.levelNum - 1].levelCompleted = true;
         //if ((allSubLevels[GM.worldNumber].Count == (levelInfo.levelNum + 1)) && (allWorlds[GM.worldNumber].completion == 0))
         //{
         //    CompleteWorld();
@@ -318,5 +375,15 @@ public class ImmortalGameManager : MonoBehaviour {
         }
 
         return GM.normalModeOn;
+    }
+    public static bool ToggleCamMode()
+    {
+        GM.cockPitModeOn = GM.cockPitModeOn ? false : true;
+
+        return GM.cockPitModeOn;
+    }
+    public static void SavePlayerPos()
+    {
+        GM.lastWorldPos = GameObject.FindGameObjectWithTag("Player").transform.position;
     }
 }

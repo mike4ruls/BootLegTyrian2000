@@ -13,6 +13,7 @@ public class TitleGameManager : MonoBehaviour {
     public GameObject SettingsUI;
     public Text tutorialText;
     public Text modeText;
+    public Text camModeText;
 
     // Use this for initialization
     void Start () {
@@ -29,6 +30,10 @@ public class TitleGameManager : MonoBehaviour {
         if (!ImmortalGameManager.GM.normalModeOn)
         {
             modeText.text = "Mode: Testing Mode";
+        }
+        if (!ImmortalGameManager.GM.cockPitModeOn)
+        {
+            modeText.text = "Cam Mode: Cockpit";
         }
     }
 
@@ -78,6 +83,12 @@ public class TitleGameManager : MonoBehaviour {
     {
         bool on = ImmortalGameManager.ToggleMode();
         modeText.text = on ? "Mode: Normal Mode" : "Mode: Testing Mode";
+        audioManager.PlayButtonClicked();
+    }
+    public void UpdateCamModeText()
+    {
+        bool on = ImmortalGameManager.ToggleCamMode();
+        camModeText.text = on ? "Cam Mode: Cockpit" : "Cam Mode: Topdown";
         audioManager.PlayButtonClicked();
     }
 
