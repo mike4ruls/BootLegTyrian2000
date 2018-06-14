@@ -31,9 +31,9 @@ public class TitleGameManager : MonoBehaviour {
         {
             modeText.text = "Mode: Testing Mode";
         }
-        if (!ImmortalGameManager.GM.cockPitModeOn)
+        if (ImmortalGameManager.GM.cockPitModeOn)
         {
-            modeText.text = "Cam Mode: Cockpit";
+            camModeText.text = "Cam Mode: Cockpit";
         }
     }
 

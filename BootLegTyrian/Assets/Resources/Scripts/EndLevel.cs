@@ -23,9 +23,13 @@ public class EndLevel : MonoBehaviour {
         }
         else if(lastEnemy != null)
         {
-            if (lastEnemy.transform.position.z < transform.position.z)
+            if (lastEnemy.transform.position.z + 10< transform.position.z)
             {
                 canMove = true;
+            }
+            else
+            {
+                canMove = false;
             }
         }
     }
